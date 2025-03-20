@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm phòng chiếu</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<h2>Thêm phòng chiếu</h2>
+<form th:action="@{/cinemas/phong/save}" th:object="${phong}" method="post">
+    <label for="tenPhong">Tên phòng:</label>
+    <input type="text" id="tenPhong" th:field="*{tenPhong}" required>
+
+    <label for="rap">Rạp:</label>
+    <select id="rap" th:field="*{rapPhim}">
+        <option th:each="rap : ${raps}" th:value="${rap.id}" th:text="${rap.tenRap}"></option>
+    </select>
+
+    <label for="sucChua">Sức chứa:</label>
+    <input type="number" id="sucChua" th:field="*{soGhe}" required>
+
+    <button type="submit">Lưu</button>
+</form>
+<button><a th:href="@{/cinemas/}">Quay Lại</a></button>
+</body>
+</html>

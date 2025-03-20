@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Rạp Phim</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"> <!-- Thêm CSS nếu cần -->
+</head>
+<body>
+<h1>Danh sách Rạp Phim</h1>
+<a href="/cinemas/rap/form">Thêm Rạp Mới</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tên Rạp</th>
+        <th>Địa Chỉ</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="rap : ${rapPhims}">
+        <td th:text="${rap.id}"></td>
+        <td th:text="${rap.tenRap}"></td>
+        <td th:text="${rap.diaChi}"></td>
+        <td>
+            <a th:href="@{/cinemas/rap/edit/{id}(id=${rap.id})}">Sửa</a>
+            <a th:href="@{/cinemas/rap/delete/{id}(id=${rap.id})}" onclick="return confirm('Xóa rạp này?')">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<button><a th:href="@{/cinemas/}">Quay Lại</a></button>
+</body>
+</html>

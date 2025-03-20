@@ -1,0 +1,23 @@
+<!-- edit.html - Sửa rạp phim -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>Sửa Rạp Phim</title>
+</head>
+<body>
+<h2>Sửa Rạp Phim</h2>
+<form th:action="@{/cinemas/rap/save}" th:object="${rapPhim}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+
+    <label>Tên Rạp:</label>
+    <input type="text" th:field="*{tenRap}" required/><br/>
+
+    <label>Địa Chỉ:</label>
+    <input type="text" th:field="*{diaChi}" required/><br/>
+
+    <button type="submit">Cập nhật</button>
+</form>
+<button><a th:href="@{/cinemas/}"></a>Quay lai</button>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section>
+    <h2>Danh Sách Phim</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên Phim</th>
+            <th>Thể Loại</th>
+            <th>Thời Lượng</th>
+            <th>Hành Động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="phim : ${phimList}">
+            <td th:text="${phim.id}"></td>
+            <td th:text="${phim.tenPhim}"></td>
+            <td th:text="${phim.theLoai}"></td>
+            <td th:text="${phim.thoiLuong}"></td>
+            <td>
+                <a th:href="@{/cinemas/phim/edit/{id}(id=${phim.id})}">Sửa</a>
+                <a th:href="@{/cinemas/phim/delete/{id}(id=${phim.id})}" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/cinemas/phim/form">Thêm Phim Mới</a>
+    <button><a th:href="@{/cinemas/}">Quay Lại</a></button>
+</section>
+</body>
+</html>

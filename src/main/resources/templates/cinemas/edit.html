@@ -1,0 +1,38 @@
+<!-- templates/cinemas/edit.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh Sửa Phim</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
+<body>
+<h2>Chỉnh Sửa Phim</h2>
+<form th:action="@{/cinemas/phim/update}" th:object="${phim}" method="post">
+    <label>Id</label>
+    <input id="id" th:field="*{id}" readonly><br>
+
+    <label for="tenPhim">Tên Phim:</label>
+    <input type="text" id="tenPhim" th:field="*{tenPhim}" required/>
+    <br/>
+
+    <label for="theLoai">Thể Loại:</label>
+    <input type="text" id="theLoai" th:field="*{theLoai}" required/>
+    <br/>
+
+    <label for="thoiLuong">Thời Lượng (phút):</label>
+    <input type="number" id="thoiLuong" th:field="*{thoiLuong}" required/>
+    <br/>
+
+    <label for="daoDien">Đạo Diễn:</label>
+    <input type="text" id="daoDien" th:field="*{daoDien}" required/>
+    <br/>
+
+    <label for="moTa">Mô Tả:</label>
+    <textarea id="moTa" th:field="*{moTa}"></textarea>
+    <br/>
+
+    <button type="submit">Lưu Phim</button>
+    <button><a th:href="@{/cinemas/}">Quay Lại</a></button>
+</form>
+</body>
+</html>
