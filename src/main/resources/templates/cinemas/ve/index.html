@@ -1,0 +1,40 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Danh sách Vé</title>-->
+<!--    <link rel="stylesheet" th:href="@{/css/main.css}">-->
+<!--</head>-->
+<!--<body>-->
+<!--<h2>Danh sách Vé</h2>-->
+<!--&lt;!&ndash; Link đi đến form thêm vé &ndash;&gt;-->
+<!--<a th:href="@{/cinemas/ve/form}">Thêm Vé</a>-->
+<!--<table border="1">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>ID</th>-->
+<!--        <th>Thông tin suất chiếu</th>-->
+<!--        <th>Ghế</th>-->
+<!--        <th>Hành động</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    &lt;!&ndash; Lặp qua danh sách vé được gán vào model với key "ves" &ndash;&gt;-->
+<!--    <tr th:each="ve : ${ves}">-->
+<!--        <td th:text="${ve.id}"></td>-->
+<!--        <td>-->
+<!--            <span th:text="${ve.suatChieu.phim.tenPhim}"></span>-->
+<!--            <br>-->
+<!--            <span th:text="${ve.suatChieu.ngayChieu}"></span> - -->
+<!--            <span th:text="${ve.suatChieu.gioBatDau}"></span>-->
+<!--        </td>-->
+<!--        <td th:text="${ve.ghe.soGhe}"></td>-->
+<!--        <td>-->
+<!--            &lt;!&ndash; Link đến form chỉnh sửa vé với id truyền vào qua URL &ndash;&gt;-->
+<!--            <a th:href="@{'/cinemas/ve/' + ${ve.id}}">Sửa</a>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+<!--</body>-->
+<!--</html>-->

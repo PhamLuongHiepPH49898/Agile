@@ -10,15 +10,16 @@ public class NguoiDung {
     private Long id;
 
     private String hoTen;
-
     private String email;
-
     private String matKhau;
     private String soDienThoai;
+
     @Enumerated(EnumType.STRING)
-    private VaiTro vaiTro = VaiTro.KHACH_HANG;
+    @Column(name = "vai_tro") // Đảm bảo ánh xạ chính xác với DB
+    private VaiTro vaiTro;
 
     public NguoiDung() {
+        this.vaiTro = VaiTro.KHACH_HANG; // Giá trị mặc định
     }
 
     public NguoiDung(Long id, String hoTen, String email, String matKhau, String soDienThoai, VaiTro vaiTro) {
@@ -27,7 +28,7 @@ public class NguoiDung {
         this.email = email;
         this.matKhau = matKhau;
         this.soDienThoai = soDienThoai;
-        this.vaiTro = vaiTro;
+        this.vaiTro = vaiTro != null ? vaiTro : VaiTro.KHACH_HANG; // Tránh lỗi nếu vaiTro bị null
     }
 
     public Long getId() {
@@ -78,7 +79,32 @@ public class NguoiDung {
         this.vaiTro = vaiTro;
     }
 }
+
 enum VaiTro {
-    KHACH_HANG,
-    QUAN_TRI_VIEN
+    KHACH_HANG("Khách hàng"),
+    QUAN_TRI_VIEN("Quản trị viên");
+
+    private final String value;
+
+    VaiTro(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
+    }
+
+    public static VaiTro fromString(String text) {
+        for (VaiTro v : VaiTro.values()) {
+            if (v.value.equalsIgnoreCase(text)) {
+                return v;
+            }
+        }
+        throw new IllegalArgumentException("Không tìm thấy enum VaiTro cho giá trị: " + text);
+    }
 }

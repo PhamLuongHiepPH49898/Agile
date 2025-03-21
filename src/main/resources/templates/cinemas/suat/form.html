@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+  <meta charset="UTF-8">
+  <title>Thêm Suất Chiếu</title>
+</head>
+<body>
+<h2>Thêm Suất Chiếu</h2>
+<form th:action="@{/cinemas/suat/form}" th:object="${suat}" method="post">
+    <label>Chọn phim:</label>
+    <select id="phim" name="phim" th:field="*{phim.id}" required>
+        <option value="">--Chon phim--</option>
+        <option th:each="phim :${phims}"
+        th:value="${phim.id}"
+        th:text="${phim.tenPhim}">
+        </option>
+    </select>
+    <br>
+    <label for="ngayChieu">Ngày chiếu:</label>
+    <input type="date" name="ngayChieu" id="ngayChieu" th:field="*{ngayChieu}" required>
+    <br>
+    <label for="gioBatDau">Giờ bắt đầu:</label>
+    <input type="time" id="gioBatDau" th:field="*{gioBatDau}" required><br>
+    <label for="gioKetThuc">Giờ kết thúc:</label>
+    <input type="time" id="gioKetThuc" th:field="*{gioKetThuc}" required>
+    <br>
+    <label>Chọn phòng:</label>
+    <select id="phong" name="phong" th:field="*{phongChieu.id}">
+        <option value="">--Chọn phòng--</option>
+        <option th:each="phong :${phongs}"
+                th:value="${phong.id}"
+                th:text="${phong.tenPhong}"></option>
+    </select>
+    <label>Giá :</label>
+    <input type="number" id="giaVe" th:field="*{giaVe}" step="1000" min="0">
+    <br>
+    <button type="submit">Thêm Suất Chiếu</button>
+</form>
+<br>
+<a th:href="@{/suat}">Quay lại danh sách suất chiếu</a>
+</body>
+</html>

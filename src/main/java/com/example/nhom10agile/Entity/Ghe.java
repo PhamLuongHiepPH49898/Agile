@@ -15,7 +15,8 @@ public class Ghe {
 
     private String soGhe;
 
-    @Enumerated(EnumType.STRING)
+    // Sử dụng converter để chuyển đổi giữa enum và string (dữ liệu DB sẽ là "Thường", "VIP", "Đôi")
+    @Convert(converter = LoaiGheConverter.class)
     private LoaiGhe loaiGhe = LoaiGhe.THUONG;
 
     @Enumerated(EnumType.STRING)
@@ -32,6 +33,7 @@ public class Ghe {
         this.trangThaiGhe = trangThaiGhe;
     }
 
+    // Getter & Setter
     public Long getId() {
         return id;
     }
@@ -71,15 +73,43 @@ public class Ghe {
     public void setTrangThaiGhe(TrangThaiGhe trangThaiGhe) {
         this.trangThaiGhe = trangThaiGhe;
     }
-}
 
-enum LoaiGhe{
-    THUONG,
-    VIP,
-    DOI
-}
-enum TrangThaiGhe{
-    TRONG,
-    DA_DAT
-}
+    // ✅ Phương thức hỗ trợ đặt ghế
+    public boolean datGhe() {
+        if (this.trangThaiGhe == TrangThaiGhe.TRONG) {
+            this.trangThaiGhe = TrangThaiGhe.DA_DAT;
+            return true;
+        }
+        return false;
+    }
 
+    // ✅ Phương thức hỗ trợ hủy đặt ghế
+    public boolean huyGhe() {
+        if (this.trangThaiGhe == TrangThaiGhe.DA_DAT) {
+            this.trangThaiGhe = TrangThaiGhe.TRONG;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Ghe{id=" + id + ", soGhe='" + soGhe + "', loaiGhe=" + loaiGhe + ", trangThaiGhe=" + trangThaiGhe + '}';
+    }
+
+
+
+    public enum TrangThaiGhe {
+        TRONG, DA_DAT;
+
+        public static String getTrangThaiGhe(TrangThaiGhe trangThai) {
+            switch (trangThai) {
+                case DA_DAT:
+                    return "Đã đặt";
+                case TRONG:
+                default:
+                    return "Còn trống";
+            }
+        }
+    }
+}

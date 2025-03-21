@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý Ghế</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<h2>Danh sách Ghế</h2>
+<a th:href="@{/cinemas/ghe/form}">Thêm Ghế</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Số ghế</th>
+        <th>Phòng chiếu</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ghe : ${ghes}">
+        <td th:text="${ghe.id}"></td>
+        <td th:text="${ghe.soGhe}"></td>
+        <td th:text="${ghe.phongChieu.tenPhong}"></td>
+
+        <!-- Sử dụng giá trị enum từ model -->
+        <td th:text="${ghe.trangThaiGhe == TrangThaiGhe ? 'Đã đặt' : 'Còn trống'}"></td>
+
+        <td>
+            <a th:href="@{/cinemas/ghe/form(id=${ghe.id})}">Sửa</a> |
+            <a th:href="@{/cinemas/ghe/delete/{id}(id=${ghe.id})}" onclick="return confirm('Xác nhận xóa?')">Xóa</a> |
+
+            <!-- Hiển thị nút Đặt nếu trạng thái không phải là DA_DAT -->
+            <button th:if="${ghe.trangThaiGhe != TrangThaiGhe}"
+                    th:attr="onclick=|datGhe(${ghe.id})|">Đặt</button>
+
+            <!-- Hiển thị nút Hủy nếu trạng thái là DA_DAT -->
+            <button th:if="${ghe.trangThaiGhe == TrangThaiGhe}"
+                    th:attr="onclick=|huyGhe(${ghe.id})|">Hủy</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    // Hàm đặt ghế
+    function datGhe(id) {
+        fetch('/cinemas/dat/' + id, { method: 'POST' })
+            .then(response => response.json())  // Đảm bảo server trả về phản hồi JSON
+            .then(data => {
+                if (data.success) {
+                    alert('Ghế đã được đặt thành công');
+                    location.reload();
+                } else {
+                    alert('Có lỗi xảy ra: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Lỗi kết nối: ' + error);
+            });
+    }
+
+    // Hàm hủy ghế
+    function huyGhe(id) {
+        fetch('/cinemas/huy/' + id, { method: 'POST' })
+            .then(response => response.json())  // Đảm bảo server trả về phản hồi JSON
+            .then(data => {
+                if (data.success) {
+                    alert('Ghế đã được hủy');
+                    location.reload();
+                } else {
+                    alert('Có lỗi xảy ra: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Lỗi kết nối: ' + error);
+            });
+    }
+</script>
+</body>
+</html>

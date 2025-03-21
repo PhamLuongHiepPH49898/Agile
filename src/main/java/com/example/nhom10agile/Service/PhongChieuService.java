@@ -22,4 +22,8 @@ public class PhongChieuService {
     public void save(@Valid PhongChieu phong) {
         phongChieuRepo.save(phong);
     }
+
+    public void deleteById(Long id) {
+        phongChieuRepo.deleteById(id);
+    }
 }

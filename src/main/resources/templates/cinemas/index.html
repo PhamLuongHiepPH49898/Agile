@@ -25,14 +25,14 @@
             <td th:text="${phim.theLoai}"></td>
             <td th:text="${phim.thoiLuong}"></td>
             <td>
-                <a th:href="@{/cinemas/phim/edit/{id}(id=${phim.id})}">Sửa</a>
-                <a th:href="@{/cinemas/phim/delete/{id}(id=${phim.id})}" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
+                <a th:href="@{/cinemas/phim/edit/{id}(id=${phim.id})}"><button>Sửa</button></a>
+                <a th:href="@{/cinemas/phim/delete/{id}(id=${phim.id})}" onclick="return confirm('Bạn có chắc muốn xóa?');"><button>Xoá</button></a>
             </td>
         </tr>
         </tbody>
     </table>
     <a href="/cinemas/phim/form">Thêm Phim Mới</a>
-    <button><a th:href="@{/cinemas/}">Quay Lại</a></button>
+    <a th:href="@{/cinemas/}"><button>Quay lại</button></a>
 </section>
 </body>
 </html>

@@ -22,4 +22,8 @@ public class VeService {
     public void save(@Valid Ve ve) {
         veRepo.save(ve);
     }
+
+    public Ve findById(Long id) {
+        return veRepo.findById(id).orElse(null);
+    }
 }

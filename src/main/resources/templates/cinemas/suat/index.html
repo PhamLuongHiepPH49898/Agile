@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Suất Chiếu</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<h2>Danh sách Suất Chiếu</h2>
+
+<a th:href="@{/cinemas/suat/form}">
+    <button>Thêm Suất Chiếu</button>
+</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Phim</th>
+        <th>Phòng</th>
+        <th>Ngày Chiếu</th>
+        <th>Giờ Bắt Đầu</th>
+        <th>Giờ Kết Thúc</th>
+        <th>Hành Động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="suat : ${suatList}">
+        <td th:text="${suat.id}"></td>
+        <td th:text="${suat.phim.tenPhim}"></td>
+        <td th:text="${suat.phongChieu.tenPhong}"></td>
+        <td th:text="${suat.ngayChieu}"></td>
+        <td th:text="${suat.gioBatDau}"></td>
+        <td th:text="${suat.gioKetThuc}"></td>
+        <td>
+            <a th:href="@{/cinemas/suat/edit/{id}(id=${suat.id})}">
+                <button>Sửa</button>
+            </a>
+            <a th:href="@{/cinemas/suat/delete/{id}(id=${suat.id})}" onclick="return confirm('Bạn có chắc muốn xóa suất chiếu này không?')">
+                <button>Xóa</button>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a th:href="@{/cinemas/}">Quay lại</a>
+</body>
+</html>

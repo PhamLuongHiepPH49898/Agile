@@ -24,12 +24,12 @@
         <td th:text="${phong.rapPhim.tenRap}"></td>
         <td th:text="${phong.soGhe}"></td>
         <td>
-            |
-            <a th:href="@{/cinemas/phong/delete/{id}(id=${phong.id})}" onclick="return confirm('Xóa phòng này?')">Xóa</a>
+
+            <a th:href="@{/cinemas/phong/delete/{id}(id=${phong.id})}" onclick="return confirm('Xóa phòng này?')"><button>Xoá</button></a>
         </td>
     </tr>
     </tbody>
 </table>
-<button><a th:href="@{/cinemas/}">Quay Lại</a></button>
+<a th:href="@{/cinemas/}"><button>Quay lại</button></a>
 </body>
 </html>

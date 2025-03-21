@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đặt Ghế</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+
+    <style>
+        .seat { width: 40px; height: 40px; margin: 5px; display: inline-block; text-align: center; line-height: 40px; border-radius: 5px; cursor: pointer; }
+        .available { background: green; color: white; }
+        .booked { background: red; color: white; cursor: not-allowed; }
+        .selected { background: blue; color: white; }
+    </style>
+</head>
+<body>
+<h2>Đặt Ghế</h2>
+<div>
+        <span th:each="ghe : ${ghes}"
+              th:classappend="${ghe.trangThaiGhe} ? 'seat booked' : 'seat available'"
+              th:text="${ghe.soGhe}"
+              th:attr="onclick=${ghe.trangThaiGhe} ? '' : 'toggleSelect(this, ' + ghe.id + ')'">
+        </span>
+</div>
+<br>
+<button onclick="confirmBooking()">Xác nhận đặt vé</button>
+<a href="/cinemas/">Quay lại</a>
+
+<script>
+    let selectedSeats = [];
+    function toggleSelect(element, gheId) {
+        if (selectedSeats.includes(gheId)) {
+            selectedSeats = selectedSeats.filter(id => id !== gheId);
+            element.classList.remove('selected');
+        } else {
+            selectedSeats.push(gheId);
+            element.classList.add('selected');
+        }
+    }
+    function confirmBooking() {
+        if (selectedSeats.length === 0) {
+            alert('Vui lòng chọn ghế trước!');
+            return;
+        }
+        selectedSeats.forEach(id => {
+            fetch('/cinemas/dat/' + id, { method: 'POST' })
+                .then(response => response.text())
+                .then(alert)
+                .then(() => location.reload());
+        });
+    }
+</script>
+</body>
+</html>

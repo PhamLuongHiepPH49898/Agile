@@ -3,16 +3,23 @@ package com.example.nhom10agile.Controller;
 import com.example.nhom10agile.Entity.*;
 import com.example.nhom10agile.Service.*;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @Controller
 @RequestMapping("/cinemas")
 public class CinemaController {
+    private static final Logger logger = LoggerFactory.getLogger(SuatChieuService.class);
     private final GheService gheService;
     private final NguoiDungService nguoiDungService;
     private final PhimService phimService;
@@ -96,6 +103,13 @@ public class CinemaController {
         model.addAttribute("rapPhim", rapPhimService.getById(id));
         return "cinemas/rap/edit";
     }
+    @PostMapping("/rap/edit")
+    public String editRap(@Valid @ModelAttribute("rapPhim") RapPhim rapPhim, BindingResult result) {
+        if (result.hasErrors()) return "cinemas/rap/edit";
+        rapPhimService.save(rapPhim);
+        return "redirect:/cinemas/rap";
+    }
+
 
     @GetMapping("/rap/delete/{id}")
     public String deleteRap(@PathVariable("id") Long id) {
@@ -116,6 +130,11 @@ public class CinemaController {
         model.addAttribute("raps", rapPhimService.getAllRap());
         return "cinemas/phong/form";
     }
+    @GetMapping("/phong/delete/{id}")
+    public String deletePhong(@PathVariable("id") Long id) {
+        phongChieuService.deleteById(id);
+        return "redirect:/cinemas/phong";
+    }
 
     @PostMapping("/phong/save")
     public String savePhong(@Valid @ModelAttribute("phong") PhongChieu phong, BindingResult result) {
@@ -127,8 +146,9 @@ public class CinemaController {
     // ============== QUẢN LÝ SUẤT CHIẾU ==============
     @GetMapping("/suat")
     public String listSuat(Model model) {
-        model.addAttribute("suats", suatChieuService.getAllSuat());
-        return "cinemas/suat/index";
+        List<SuatChieu> suats = suatChieuService.getAllSuat();
+        model.addAttribute("suatList", suats);
+        return "cinemas/suat/index"; // Trả về trang index.html trong thư mục cinemas/suat
     }
 
     @GetMapping("/suat/form")
@@ -139,18 +159,75 @@ public class CinemaController {
         return "cinemas/suat/form";
     }
 
-    @PostMapping("/suat/save")
+    @PostMapping("/suat/form")
     public String saveSuat(@Valid @ModelAttribute("suat") SuatChieu suat, BindingResult result) {
         if (result.hasErrors()) return "cinemas/suat/form";
         suatChieuService.save(suat);
         return "redirect:/cinemas/suat";
     }
+    @GetMapping("/suat/delete/{id}")
+    public String deleteSuat(@PathVariable("id") Long id) {
+        suatChieuService.deleteById(id);
+        return "redirect:/cinemas/suat";
+    }
+    @GetMapping("/suat/edit/{id}")
+    public String editSuat(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("suat", suatChieuService.getById(id)); // Sửa lỗi lấy sai đối tượng
+        model.addAttribute("phims", phimService.getAllPhim());
+        model.addAttribute("phongs", phongChieuService.getAllPhong());
+        return "cinemas/suat/edit";
+    }
+    @PostMapping("/suat/edit")
+    public String editSuat(@Valid @ModelAttribute("suat") SuatChieu suat, BindingResult result) {
+        if (result.hasErrors()) return "cinemas/suat/form";
+        suatChieuService.save(suat);
+        return "redirect:/cinemas/suat";
+    }
+
+    // Cập nhật suất chiếu (BỎ QUA VALIDATE)
+    @PostMapping("/edit")
+    public String updateSuat(@ModelAttribute("suat") SuatChieu suat, Model model) {
+        suatChieuService.save(suat);
+        return "redirect:/cinemas/suat";
+    }
 
     // ============== QUẢN LÝ GHẾ ==============
+    @PostMapping("/dat/{id}")
+    public ResponseEntity<Map<String, Object>> datGhe(@PathVariable("id") Long id) {
+        boolean success = gheService.datGhe(id);  // Lógica đặt ghế
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", success);
+        response.put("message", success ? "Ghế đã được đặt thành công" : "Lỗi xảy ra");
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/huy/{id}")
+    public ResponseEntity<Map<String, Object>> huyGhe(@PathVariable("id") Long id) {
+        boolean success = gheService.huyGhe(id);  // Lógica hủy ghế
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", success);
+        response.put("message", success ? "Ghế đã được hủy" : "Lỗi xảy ra");
+        return ResponseEntity.ok(response);
+    }
+//    @GetMapping("/cinemas/ghe")
+//    public String getGheList(Model model) {
+//        List<Ghe> gheList = gheService.getAllGhe();
+//        model.addAttribute("ghes", gheList);
+//        return "cinemas/ghe/index";
+//    }
     @GetMapping("/ghe")
     public String listGhe(Model model) {
-        model.addAttribute("ghes", gheService.getAllGhe());
+
+        model.addAttribute("TrangThaiGhe", Ghe.TrangThaiGhe.values());
+        List<Ghe> gheList = gheService.getAllGhe();
+        model.addAttribute("ghes", gheList);
+        // Các model khác
         return "cinemas/ghe/index";
+    }
+    @GetMapping("/ghe/delete/{id}")
+    public String deleteGhe(@PathVariable("id") Long id) {
+        gheService.delete(id);
+        return "redirect:/cinemas/ghe";
     }
 
     @GetMapping("/ghe/form")
@@ -161,10 +238,15 @@ public class CinemaController {
     }
 
     @PostMapping("/ghe/save")
-    public String saveGhe(@Valid @ModelAttribute("ghe") Ghe ghe, BindingResult result) {
-        if (result.hasErrors()) return "cinemas/ghe/form";
+    public String saveGhe( @ModelAttribute("ghe") Ghe ghe) {
+
         gheService.save(ghe);
         return "redirect:/cinemas/ghe";
+    }
+    @GetMapping("/ghe/booking")
+    public String bookingGhe(Model model) {
+        model.addAttribute("ghes", gheService.getAllGhe());
+        return "cinemas/ghe/booking";
     }
 
     // ============== QUẢN LÝ VÉ ==============
@@ -174,6 +256,15 @@ public class CinemaController {
         return "cinemas/ve/index";
     }
 
+    @GetMapping("/ve/{id}")
+    public String getVeForm(@PathVariable Long id, Model model) {
+        Ve ve = veService.findById(id); // Lấy dữ liệu từ database
+        if (ve.getSuatChieu() == null || ve.getSuatChieu().getPhim() == null) {
+            System.out.println("Dữ liệu suất chiếu hoặc phim bị null!");
+        }
+        model.addAttribute("ve", ve);
+        return "cinemas/ve/form";
+    }
     @GetMapping("/ve/form")
     public String showVeForm(Model model) {
         model.addAttribute("ve", new Ve());
@@ -184,8 +275,26 @@ public class CinemaController {
     }
 
     @PostMapping("/ve/save")
-    public String saveVe(@Valid @ModelAttribute("ve") Ve ve, BindingResult result) {
-        if (result.hasErrors()) return "cinemas/ve/form";
+    public String saveVe(@Valid @ModelAttribute("ve") Ve ve, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            // Trả lại form nếu có lỗi
+            model.addAttribute("suats", suatChieuService.getAllSuat());
+            model.addAttribute("ghes", gheService.getAllGhe());
+            model.addAttribute("nguoidungs", nguoiDungService.getAllNguoiDung());
+            return "cinemas/ve/form";
+        }
+
+        // Kiểm tra xem gheId có hợp lệ hay không
+        if (ve.getGhe() == null || ve.getGhe().getId() == null) {
+            // Nếu gheId bị thiếu, trả lại thông báo lỗi
+            model.addAttribute("errorMessage", "Vui lòng chọn ghế!");
+            model.addAttribute("suats", suatChieuService.getAllSuat());
+            model.addAttribute("ghes", gheService.getAllGhe());
+            model.addAttribute("nguoidungs", nguoiDungService.getAllNguoiDung());
+            return "cinemas/ve/form";
+        }
+
+        // Nếu mọi thứ đều ổn, lưu vé vào cơ sở dữ liệu
         veService.save(ve);
         return "redirect:/cinemas/ve";
     }

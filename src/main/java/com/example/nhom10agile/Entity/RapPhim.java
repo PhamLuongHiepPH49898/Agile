@@ -65,7 +65,10 @@ public class RapPhim {
         return phongChieuList;
     }
 
-    public void setPhongChieuList(List<PhongChieu> phongChieuList) {
-        this.phongChieuList = phongChieuList;
+    public void addPhongChieuList(PhongChieu phongChieuList) {
+        this.phongChieuList.add(phongChieuList);
+    }
+    public void removePhongChieuList(PhongChieu phongChieuList) {
+        this.phongChieuList.remove(phongChieuList);
     }
 }
