@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/css/main.css}">
-  <meta charset="UTF-8">
-  <title>Thêm Suất Chiếu</title>
+    <meta charset="UTF-8">
+    <title>Thêm Suất Chiếu</title>
 </head>
 <body>
 <h2>Thêm Suất Chiếu</h2>
@@ -12,8 +12,8 @@
     <select id="phim" name="phim" th:field="*{phim.id}" required>
         <option value="">--Chon phim--</option>
         <option th:each="phim :${phims}"
-        th:value="${phim.id}"
-        th:text="${phim.tenPhim}">
+                th:value="${phim.id}"
+                th:text="${phim.tenPhim}">
         </option>
     </select>
     <br>

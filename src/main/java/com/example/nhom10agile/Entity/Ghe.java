@@ -15,15 +15,13 @@ public class Ghe {
 
     private String soGhe;
 
-    // Sử dụng converter để chuyển đổi giữa enum và string (dữ liệu DB sẽ là "Thường", "VIP", "Đôi")
     @Convert(converter = LoaiGheConverter.class)
     private LoaiGhe loaiGhe = LoaiGhe.THUONG;
 
     @Enumerated(EnumType.STRING)
     private TrangThaiGhe trangThaiGhe = TrangThaiGhe.TRONG;
 
-    public Ghe() {
-    }
+    public Ghe() {}
 
     public Ghe(Long id, PhongChieu phongChieu, String soGhe, LoaiGhe loaiGhe, TrangThaiGhe trangThaiGhe) {
         this.id = id;
@@ -34,47 +32,22 @@ public class Ghe {
     }
 
     // Getter & Setter
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public PhongChieu getPhongChieu() { return phongChieu; }
+    public void setPhongChieu(PhongChieu phongChieu) { this.phongChieu = phongChieu; }
 
-    public PhongChieu getPhongChieu() {
-        return phongChieu;
-    }
+    public String getSoGhe() { return soGhe; }
+    public void setSoGhe(String soGhe) { this.soGhe = soGhe; }
 
-    public void setPhongChieu(PhongChieu phongChieu) {
-        this.phongChieu = phongChieu;
-    }
+    public LoaiGhe getLoaiGhe() { return loaiGhe; }
+    public void setLoaiGhe(LoaiGhe loaiGhe) { this.loaiGhe = loaiGhe; }
 
-    public String getSoGhe() {
-        return soGhe;
-    }
+    public TrangThaiGhe getTrangThaiGhe() { return trangThaiGhe; }
+    public void setTrangThaiGhe(TrangThaiGhe trangThaiGhe) { this.trangThaiGhe = trangThaiGhe; }
 
-    public void setSoGhe(String soGhe) {
-        this.soGhe = soGhe;
-    }
-
-    public LoaiGhe getLoaiGhe() {
-        return loaiGhe;
-    }
-
-    public void setLoaiGhe(LoaiGhe loaiGhe) {
-        this.loaiGhe = loaiGhe;
-    }
-
-    public TrangThaiGhe getTrangThaiGhe() {
-        return trangThaiGhe;
-    }
-
-    public void setTrangThaiGhe(TrangThaiGhe trangThaiGhe) {
-        this.trangThaiGhe = trangThaiGhe;
-    }
-
-    // ✅ Phương thức hỗ trợ đặt ghế
+    // ✅ Phương thức đặt ghế
     public boolean datGhe() {
         if (this.trangThaiGhe == TrangThaiGhe.TRONG) {
             this.trangThaiGhe = TrangThaiGhe.DA_DAT;
@@ -83,7 +56,7 @@ public class Ghe {
         return false;
     }
 
-    // ✅ Phương thức hỗ trợ hủy đặt ghế
+    // ✅ Phương thức hủy ghế
     public boolean huyGhe() {
         if (this.trangThaiGhe == TrangThaiGhe.DA_DAT) {
             this.trangThaiGhe = TrangThaiGhe.TRONG;
@@ -97,19 +70,11 @@ public class Ghe {
         return "Ghe{id=" + id + ", soGhe='" + soGhe + "', loaiGhe=" + loaiGhe + ", trangThaiGhe=" + trangThaiGhe + '}';
     }
 
-
-
     public enum TrangThaiGhe {
         TRONG, DA_DAT;
 
         public static String getTrangThaiGhe(TrangThaiGhe trangThai) {
-            switch (trangThai) {
-                case DA_DAT:
-                    return "Đã đặt";
-                case TRONG:
-                default:
-                    return "Còn trống";
-            }
+            return (trangThai == DA_DAT) ? "Đã đặt" : "Còn trống";
         }
     }
 }

@@ -1,24 +1,24 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Thêm/Sửa Ghế</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}" />
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Thêm/Sửa Ghế</title>-->
+<!--    <link rel="stylesheet" th:href="@{/css/main.css}" />-->
 
-</head>
-<body>
-<h2>Thêm/Sửa Ghế</h2>
-<form th:action="@{/cinemas/ghe/save}" method="post" th:object="${ghe}">
-    <input type="number" th:field="*{id}" readonly/>
-    <label>Số ghế:</label>
-    <input type="text" th:field="*{soGhe}" required/>
-    <br>
-    <label>Phòng chiếu:</label>
-    <select th:field="*{phongChieu.id}">
-        <option th:each="phong : ${phongs}" th:value="${phong.id}" th:text="${phong.tenPhong}"></option>
-    </select>
-    <br>
-    <button type="submit">Lưu</button>
-    <a href="/cinemas/">Quay lại</a>
-</form>
-</body>
-</html>
+<!--</head>-->
+<!--<body>-->
+<!--<h2>Thêm/Sửa Ghế</h2>-->
+<!--<form th:action="@{/cinemas/ghe/save}" method="post" th:object="${ghe}">-->
+<!--    <input type="number" th:field="*{id}" readonly/>-->
+<!--    <label>Số ghế:</label>-->
+<!--    <input type="text" th:field="*{soGhe}" required/>-->
+<!--    <br>-->
+<!--    <label>Phòng chiếu:</label>-->
+<!--    <select th:field="*{phongChieu.id}">-->
+<!--        <option th:each="phong : ${phongs}" th:value="${phong.id}" th:text="${phong.tenPhong}"></option>-->
+<!--    </select>-->
+<!--    <br>-->
+<!--    <button type="submit">Lưu</button>-->
+<!--    <a href="/cinemas/">Quay lại</a>-->
+<!--</form>-->
+<!--</body>-->
+<!--</html>-->

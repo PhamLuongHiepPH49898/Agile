@@ -5,26 +5,100 @@
     <title>Đặt Vé Rạp Phim</title>
     <link rel="stylesheet" th:href="@{/css/main.css }">
     <script>
+        function confirmBooking() {
+            alert("Đặt vé thành công! Chúc bạn xem phim vui vẻ.");
+            return true; // Tiếp tục gửi form sau khi hiển thị thông báo
+        }
+        let selectedSuatChieu = null;
+        let selectedGhe = null;
+
         function showStep(step) {
             document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
             document.getElementById(step).style.display = 'block';
         }
 
         function selectSuatChieu(suatChieuId) {
+            // Lấy thông tin suất chiếu từ danh sách
+            const suat = [...document.querySelectorAll('#step1 tr[data-suat-id]')]
+                .find(tr => tr.getAttribute('data-suat-id') == suatChieuId);
+
+            selectedSuatChieu = {
+                id: suatChieuId,
+                tenPhim: suat.querySelector('[data-field="tenPhim"]').textContent,
+                tenPhong: suat.querySelector('[data-field="tenPhong"]').textContent,
+                ngayChieu: suat.querySelector('[data-field="ngayChieu"]').textContent,
+                gioBatDau: suat.querySelector('[data-field="gioBatDau"]').textContent,
+                giaVe: suat.querySelector('[data-field="giaVe"]').textContent
+            };
+
             document.getElementById('suatChieuId').value = suatChieuId;
             showStep('step2');
         }
 
         function selectGhe(gheId) {
+            // Lấy thông tin ghế từ danh sách
+            const ghe = [...document.querySelectorAll('#step2 button[data-ghe-id]')]
+                .find(btn => btn.getAttribute('data-ghe-id') == gheId);
+
+            selectedGhe = {
+                id: gheId,
+                soGhe: ghe.textContent
+            };
+
             document.getElementById('gheId').value = gheId;
+
+            // Cập nhật thông tin hiển thị
+            document.getElementById('tenPhim').textContent = selectedSuatChieu.tenPhim;
+            document.getElementById('tenPhong').textContent = selectedSuatChieu.tenPhong;
+            document.getElementById('ngayChieu').textContent = selectedSuatChieu.ngayChieu;
+            document.getElementById('gioBatDau').textContent = selectedSuatChieu.gioBatDau;
+            document.getElementById('soGhe').textContent = selectedGhe.soGhe;
+            document.getElementById('giaVe').textContent = selectedSuatChieu.giaVe;
+
             showStep('step3');
         }
     </script>
 </head>
 <body>
 <h2>Đặt Vé Xem Phim</h2>
+<script>
+    window.onload = function() {
+        let successMessage = "[[${successMessage}]]";
+        if (successMessage) {
+            alert(successMessage);
+        }
+    };
+</script>
 
-<!-- Bước 1: Chọn suất chiếu -->
+<div id="step3" class="step" style="display:none;">
+    <h3>Thông Tin Vé Đã Chọn</h3>
+    <form th:action="@{/cinemas/ve/save}" method="post" onsubmit="return confirmBooking()">
+        <input type="hidden" id="suatChieuId" name="suatChieuId">
+        <input type="hidden" id="gheId" name="gheId">
+
+        <table border="1">
+            <tr>
+                <th>Phim</th>
+                <th>Phòng Chiếu</th>
+                <th>Ngày Chiếu</th>
+                <th>Giờ Bắt Đầu</th>
+                <th>Ghế</th>
+                <th>Giá Vé</th>
+            </tr>
+            <tr>
+                <td id="tenPhim">-</td>
+                <td id="tenPhong">-</td>
+                <td id="ngayChieu">-</td>
+                <td id="gioBatDau">-</td>
+                <td id="soGhe">-</td>
+                <td id="giaVe">- VND</td>
+            </tr>
+        </table>
+
+        <button type="submit">Xác nhận đặt vé</button>
+    </form>
+    <button onclick="showStep('step2')">Quay lại chọn ghế</button>
+</div>
 <div id="step1" class="step">
     <h3>Chọn Suất Chiếu</h3>
     <table border="1">
@@ -36,12 +110,12 @@
             <th>Giá Vé</th>
             <th>Chọn</th>
         </tr>
-        <tr th:each="suat : ${suats}">
-            <td th:text="${suat.phim?.tenPhim}"></td>
-            <td th:text="${suat.phongChieu?.tenPhong}"></td>
-            <td th:text="${suat.ngayChieu}"></td>
-            <td th:text="${suat.gioBatDau}"></td>
-            <td th:text="${suat.giaVe} + ' VND'"></td>
+        <tr th:each="suat : ${suats}" th:attr="data-suat-id=${suat.id}">
+            <td data-field="tenPhim" th:text="${suat.phim?.tenPhim}"></td>
+            <td data-field="tenPhong" th:text="${suat.phongChieu?.tenPhong}"></td>
+            <td data-field="ngayChieu" th:text="${suat.ngayChieu}"></td>
+            <td data-field="gioBatDau" th:text="${suat.gioBatDau}"></td>
+            <td data-field="giaVe" th:text="${suat.giaVe} + ' VND'"></td>
             <td>
                 <button type="button" th:onclick="'selectSuatChieu(' + ${suat.id} + ')'">Chọn</button>
             </td>
@@ -52,33 +126,17 @@
 <!-- Bước 2: Chọn ghế -->
 <div id="step2" class="step" style="display:none;">
     <h3>Chọn Ghế</h3>
-    <form action="/cinemas/ve/save" method="post">
-        <input type="hidden" id="suatChieuId" name="suatChieuId">
-        <input type="hidden" id="gheId" name="gheId">
-
-        <div class="seat-map">
-            <button type="button" th:each="ghe : ${ghes}"
-                    th:text="${ghe.soGhe}"
-                    th:classappend="${ghe.trangThaiGhe == 'Đã đặt' ? 'ghe-da-dat' : 'ghe-trong'}"
-                    th:disabled="${ghe.trangThaiGhe == 'Đã đặt'}"
-                    th:onclick="'selectGhe(' + ${ghe.id} + ')'"
-                    th:value="${ghe.id}">
-            </button>
-        </div>
-    </form>
-</div>
-
-<!-- Bước 3: Xác nhận vé -->
-<div id="step3" class="step" style="display:none;">
-    <h3>Thông Tin Vé</h3>
-    <p><strong>Id:</strong> <span th:text="${ve?.id}"></span></p>
-    <p><strong>Phim:</strong> <span th:text="${ve?.suatChieu?.phim?.tenPhim}"></span></p>
-    <p><strong>Phòng Chiếu:</strong> <span th:text="${ve?.suatChieu?.phongChieu?.tenPhong}"></span></p>
-    <p><strong>Ngày Chiếu:</strong> <span th:text="${ve?.suatChieu?.ngayChieu}"></span></p>
-    <p><strong>Giờ Bắt Đầu:</strong> <span th:text="${ve?.suatChieu?.gioBatDau}"></span></p>
-    <p><strong>Ghế:</strong> <span th:text="${ve?.ghe?.soGhe}"></span></p>
-    <p><strong>Giá Vé:</strong> <span th:text="${ve?.suatChieu?.giaVe} + ' VND'"></span></p>
-    <a href="/cinemas/">Quay lại Trang Chủ</a>
+    <div class="seat-map">
+        <button type="button"
+                th:each="ghe : ${ghes}"
+                th:attr="data-ghe-id=${ghe.id}"
+                th:text="${ghe.soGhe}"
+                th:classappend="${ghe.trangThaiGhe == 'Đã đặt' ? 'ghe-da-dat' : 'ghe-trong'}"
+                th:disabled="${ghe.trangThaiGhe == 'Đã đặt'}"
+                th:onclick="'selectGhe(' + ${ghe.id} + ')'">
+        </button>
+    </div>
+    <button onclick="showStep('step1')">Quay lại chọn suất</button>
 </div>
 
 </body>

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,7 +209,7 @@ public class CinemaController {
         response.put("message", success ? "Ghế đã được hủy" : "Lỗi xảy ra");
         return ResponseEntity.ok(response);
     }
-//    @GetMapping("/cinemas/ghe")
+    //    @GetMapping("/cinemas/ghe")
 //    public String getGheList(Model model) {
 //        List<Ghe> gheList = gheService.getAllGhe();
 //        model.addAttribute("ghes", gheList);
@@ -267,7 +267,8 @@ public class CinemaController {
     }
     @GetMapping("/ve/form")
     public String showVeForm(Model model) {
-        model.addAttribute("ve", new Ve());
+        List<Ve> ves = veService.getAllVe();
+        model.addAttribute("ves", ves);
         model.addAttribute("suats", suatChieuService.getAllSuat());
         model.addAttribute("ghes", gheService.getAllGhe());
         model.addAttribute("nguoidungs", nguoiDungService.getAllNguoiDung());
@@ -275,18 +276,16 @@ public class CinemaController {
     }
 
     @PostMapping("/ve/save")
-    public String saveVe(@Valid @ModelAttribute("ve") Ve ve, BindingResult result, Model model) {
+    public String saveVe(@Valid @ModelAttribute("ve") Ve ve, BindingResult result,
+                         Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            // Trả lại form nếu có lỗi
             model.addAttribute("suats", suatChieuService.getAllSuat());
             model.addAttribute("ghes", gheService.getAllGhe());
             model.addAttribute("nguoidungs", nguoiDungService.getAllNguoiDung());
             return "cinemas/ve/form";
         }
 
-        // Kiểm tra xem gheId có hợp lệ hay không
         if (ve.getGhe() == null || ve.getGhe().getId() == null) {
-            // Nếu gheId bị thiếu, trả lại thông báo lỗi
             model.addAttribute("errorMessage", "Vui lòng chọn ghế!");
             model.addAttribute("suats", suatChieuService.getAllSuat());
             model.addAttribute("ghes", gheService.getAllGhe());
@@ -294,8 +293,13 @@ public class CinemaController {
             return "cinemas/ve/form";
         }
 
-        // Nếu mọi thứ đều ổn, lưu vé vào cơ sở dữ liệu
+        // Lưu vé vào database
         veService.save(ve);
+
+        // Thêm thông báo thành công
+        redirectAttributes.addFlashAttribute("successMessage", "Đặt vé thành công!");
+
         return "redirect:/cinemas/ve";
     }
+
 }
